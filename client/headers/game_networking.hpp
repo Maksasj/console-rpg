@@ -177,9 +177,9 @@ class gameNetworking {
                         return;
                   }
                   closesocket(connectSocket);
-                  }
+            }
 
-                  void close() {
+            void close() {
                   DWORD exitCode;
                   if(GetExitCodeThread(receiveThread, &exitCode) != 0){
                         TerminateThread(receiveThread, exitCode);
