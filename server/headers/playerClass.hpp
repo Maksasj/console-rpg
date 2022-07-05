@@ -2,22 +2,33 @@
 
 #include <iostream>
 #include <fstream>
+#include <memory>
+#include <string>
+#include <sstream>
+
+#include "../../dependencies/sstring.hpp"
+
 #include "combatClasses.hpp"
 
-class Player {
-      private:
-            //combatClass player_class;
-            std::string identifier;
-            std::string name;
+struct Player {
+      //combatClass player_class;
+      sstring<64> identifier;
+      sstring<20> name;
 
-      public:
-            Player() {}
+      Player() {}
 
-            Player(std::string _name, std::string _identifier) {
-                  name = _name;
-                  identifier = _identifier;
-                  //player_class = _class;
-            }
+      Player(std::string _name, std::string _identifier) {
+            name = _name;
+            identifier = _identifier;
+      }
+
+      std::string getName() {
+            return name.to_string();
+      }
+
+      void setName(std::string n) {
+            name = n;
+      }
 };
 
 void savePlayerToFile(const std::string& file_name, Player& data) {
