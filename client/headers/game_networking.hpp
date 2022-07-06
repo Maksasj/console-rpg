@@ -97,7 +97,10 @@ class gameNetworking {
             // variables for networking
             WSADATA wsaData;
             int iResult;
+
             std::string username;
+            std::string identifier;
+
             SOCKET connectSocket;
 
             commandParser *parser;
@@ -105,9 +108,13 @@ class gameNetworking {
             gameNetworking(commandParser *_parser) {
                   parser = _parser;
             }
-
-            bool connectServer(std::string _username) { // try to connect to server		
+            
+            void setPlayerData(std::string _username, std::string _identifier) {
                   username = _username;
+                  identifier = _identifier;
+            }
+
+            bool connectServer(std::string _init_command) { // try to connect to server		
 
                   // get the ip addr (need to validate it!)		
                   std::string ip = std::string("127.0.0.1");
@@ -152,10 +159,7 @@ class gameNetworking {
                               // refer to the window handler of the chat page (the current hwnd is the connection page)
 
                               receiveThread = CreateThread(NULL, 0, receiveMessagesProc, (void*)parser, 0, 0);
-
-                              std::string logggin_message = "login:"+username+"*";
-
-                              send(connectSocket, logggin_message.c_str(), strlen(logggin_message.c_str()), 0);	
+                              send(connectSocket, _init_command.c_str(), strlen(_init_command.c_str()), 0);	
                               return 1;
                         }
                   }
@@ -164,6 +168,7 @@ class gameNetworking {
             }
 
             void disconnect() {
+                  closesocket(connectSocket);
                   DWORD exitCode;
                   if(GetExitCodeThread(receiveThread, &exitCode) != 0){
                         TerminateThread(receiveThread, exitCode);

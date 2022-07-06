@@ -2,4 +2,4 @@
 
 #include <cstdint>
 
-typedef uint16_t stattype;
+typedef int stattype;

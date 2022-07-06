@@ -20,6 +20,8 @@ class serverNetworking {
       private:
             virtual void processNewPlayer(SOCKET clientSocket) {};
             virtual void parseCommand(SOCKET currSocketFd, std::string text) {};
+            virtual void erasePlayer(SOCKET clientSocket) {};
+            virtual std::string getPlayerNameBySocket(SOCKET clientSocket) {};
 
             SOCKET constructSocket(){
                   SOCKET sockRtnVal = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -152,7 +154,6 @@ class serverNetworking {
                                           
                                           // update the sockets array 
                                           newSocketArray.push_back(clientSocket); // HERE WE REGISTER NEW CONNECTION
-                                          processNewPlayer(clientSocket);
                                     } else { // handle communication between already established client
                                           ZeroMemory(recvbuf, recvbuflen); // clear the recv buffer first 
                                           
@@ -163,10 +164,10 @@ class serverNetworking {
                                                 std::string user_message = std::string(recvbuf);
 
                                                 parseCommand(currSocketFd, user_message);
-                                                std::cout << "[SERVER]: Received message: " << user_message << "\n";
 
                                                 ZeroMemory(recvbuf, recvbuflen);
-                                          } else if (iResult == 0){
+                                          } else if (iResult <= 0){
+                                                std::cout << "[SERVER]: Client disconnected.\n";
                                                 // note that iResult needs to be 0 in order for a connection to close. 
                                                           
                                                 // if you reach this point, connection needs to be shutdown 
@@ -176,7 +177,6 @@ class serverNetworking {
                                                 closesocket(currSocketFd);
                                                 FD_CLR(currSocketFd, &activeFdSet);
 
-                                                
                                                 std::vector<SOCKET> tempArr; 
                                                 
                                                 // add the server socket to the front!
@@ -187,14 +187,10 @@ class serverNetworking {
                                                             tempArr.push_back((SOCKET)sock);
                                                       }
                                                 }
+
                                                 newSocketArray.assign(tempArr.begin(), tempArr.end());
-                                                
-                                          } else {
-                                                printf("recv failed: %d\n", WSAGetLastError());
-                                                closesocket(currSocketFd);
-                                                FD_CLR(currSocketFd, &activeFdSet);
-                                                WSACleanup();
-                                                return;
+                                                sendLogMessageToEveryone(getPlayerNameBySocket(currSocketFd)+" disconnected.");
+                                                erasePlayer(currSocketFd);
                                           }
                                     }	
                               }

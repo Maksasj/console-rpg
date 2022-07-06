@@ -95,8 +95,8 @@ class commandParser {
             }
 
       public:
-            commandParser() {
-                  logger = new logs();
+            commandParser(logs *l) {
+                  logger = l;
             }
 
             void parse(std::string commandstr) {
@@ -110,11 +110,22 @@ class commandParser {
                               safePrintC("STR: "+command.args[3], cgRed, 26, 3);
                               safePrintC("INT: "+command.args[4], cgLightBlue, 35, 3);
                         } else if(command.commandId == "log") {
-                              //safePrint("log", 3, 15);
-                              logger->insertLog(command.args[0]);
+                              std::string out = "";
+
+                              for(auto letter : command.args[0]) {
+                                    if(letter == '#') {
+                                          out += " ";
+                                    } else {
+                                          out += letter;
+                                    }
+                              }
+
+                              logger->insertLog(out);
                               logger->drawLog();
                         } else if(command.commandId == "servername") {
                               safePrintC(command.args[0], cgGreen, 52, 1);
+                        } else if(command.commandId == "playersonline") {
+                              safePrintC(command.args[0], cgGreen, 68, 1);
                         }
                   }
             }

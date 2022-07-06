@@ -94,7 +94,6 @@ class commandParser {
 
             std::vector<commandType> parse(std::string commandstr) {
                   std::vector<commandType> commands = explodeCommand(commandstr);
-
                   return commands;
             }
 };

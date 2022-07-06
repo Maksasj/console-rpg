@@ -33,7 +33,6 @@ class Thread {
                   procThreadStruct *pointerProcSt = new procThreadStruct(procSt);
 
                   thread = CreateThread(NULL, 0, procThread, (void*)pointerProcSt, 0, 0);
-                  std::cout << "created thread \n";
             }
 
             ~Thread() {
@@ -45,7 +44,6 @@ class Thread {
                   procThreadStruct *pointerProcSt = new procThreadStruct(procSt);
 
                   thread = CreateThread(NULL, 0, procThread, (void*)pointerProcSt, 0, 0);
-                  std::cout << "created thread \n";
             }
 
             void deleteThread() {

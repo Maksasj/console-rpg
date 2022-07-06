@@ -8,26 +8,45 @@
 
 #include "../../dependencies/sstring.hpp"
 
+#include "statstype.hpp"
 #include "combatClasses.hpp"
 
 struct Player {
       //combatClass player_class;
       sstring<64> identifier;
       sstring<20> name;
+      combatClass cclass;
 
       Player() {}
 
-      Player(std::string _name, std::string _identifier) {
+      Player(std::string _name, std::string _identifier, combatClass _cclass) {
             name = _name;
             identifier = _identifier;
+            cclass = _cclass;
+      }
+
+      stattype getHealth() {
+            return cclass.getBaseStats().health;
+      }
+
+      stattype getArmor() {
+            return cclass.getBaseStats().armor;
+      }
+
+      stattype getAgility() {
+            return cclass.getBaseStats().agility;
+      }
+
+      stattype getStrenght() {
+            return cclass.getBaseStats().strenght;
+      }
+
+      stattype getIntelect() {
+            return cclass.getBaseStats().intelect;
       }
 
       std::string getName() {
             return name.to_string();
-      }
-
-      void setName(std::string n) {
-            name = n;
       }
 };
 

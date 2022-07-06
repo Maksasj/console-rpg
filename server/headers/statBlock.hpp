@@ -2,14 +2,13 @@
 
 #include "statstype.hpp"
 
-class statBlock {
-      private:
+struct statBlock {
             stattype health;
             stattype armor;
             stattype agility;
             stattype strenght;
             stattype intelect;
-      public:
+
             statBlock(
                   stattype hp = 0,
                   stattype arm = 0,
@@ -23,4 +22,14 @@ class statBlock {
                   strenght = str;
                   intelect = intel;
             }
+
+            statBlock& operator += (const statBlock& rhs) {
+                  health += rhs.health;
+                  armor += rhs.armor;
+                  agility += rhs.agility;
+                  strenght += rhs.strenght;
+                  intelect += rhs.intelect;
+                  return *this;
+            }
+
 };

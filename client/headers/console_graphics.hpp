@@ -73,6 +73,28 @@ void drawRect(int X, int Y, int X2, int Y2) {
 	}
 }
 
+void drawRect(int X, int Y, int X2, int Y2, WORD color) {
+	for(int x = X; x <= X2; x++) {
+		if(x == X || x == X2) {
+			setPointC('+', color, x, Y);
+			setPointC('+', color, x, Y2);
+		} else {
+			setPointC('-', color, x, Y);
+			setPointC('-', color, x, Y2);
+		}
+	}
+
+	for(int y = Y; y <= Y2; y++) {
+		if(y == Y || y == Y2) {
+			setPointC('+', color, X, y);
+			setPointC('+', color, X2, y);
+		} else {
+			setPointC('|', color, X, y);
+			setPointC('|', color, X2, y);
+		}
+	}
+}
+
 void safePrint(std::string text, int X, int Y) {
 	for(auto letter : text) {
 		setPoint(letter, X, Y);
