@@ -21,7 +21,6 @@ DWORD WINAPI procThread(LPVOID lpParam){
       return 0;
 }
 
-template<typename T>
 class Thread {
       private:
             void* thread;
@@ -35,6 +34,18 @@ class Thread {
                   thread = CreateThread(NULL, 0, procThread, (void*)pointerProcSt, 0, 0);
             }
 
+            Thread(void (*_procfunc)(void*)) {
+                  void* data;
+                  procThreadStruct procSt = { (void*)data, _procfunc };
+                  procThreadStruct *pointerProcSt = new procThreadStruct(procSt);
+
+                  thread = CreateThread(NULL, 0, procThread, (void*)pointerProcSt, 0, 0);
+            }
+            
+            void deleteThread() {
+                  TerminateThread(thread, 0);
+            }
+
             ~Thread() {
                   deleteThread();
             }
@@ -44,9 +55,5 @@ class Thread {
                   procThreadStruct *pointerProcSt = new procThreadStruct(procSt);
 
                   thread = CreateThread(NULL, 0, procThread, (void*)pointerProcSt, 0, 0);
-            }
-
-            void deleteThread() {
-                  TerminateThread(thread, 0);
             }
 };

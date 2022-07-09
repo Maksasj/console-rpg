@@ -34,8 +34,6 @@ tm now() {
 }
 
 static void clock(void *data) {
-      int *d = (int*)data;
-
       while(true) {
             std::string s = dateTimeToString(now(), " %H:%M:%S");
             safePrintC(s, cgGreen, 71, 1);

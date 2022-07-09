@@ -34,19 +34,27 @@ void BasicScreen() {
     drawRect(0, 15, 43, 17);
 
     //Stats bar:
-    drawRect(0, 2, 7, 4); //Hp
-    drawRect(7, 2, 16, 4); //Arm
-    drawRect(16, 2, 25, 4); //Res
-    drawRect(25, 2, 34, 4); //Str
-    drawRect(34, 2, 43, 4); //Int
+    drawRect(0, 2, 7, 8);
+
+    //Health, mana.. bar:
+    drawRect(7, 2, 21, 8);
+    safePrintC("Health: ",cgRed , 8, 3);
+    safePrintC("Mana: ",cgBlue , 8, 4);
+    safePrintC("Energy: ",cgYellow , 8, 5);
+
+    //Mob and location bar:
+    drawRect(21, 2, 43, 8);
+
+    safePrintC("Gold: ",cgYellow , 8, 7);
 
     safePrint("Server: ", 44, 1);
     safePrint("online: ", 60, 1);
 }
 
-void updateBasicScreen(logs *logger) {
+void updateBasicScreen(logs *logger, logs *actionLogger) {
     BasicScreen();
     logger->drawLog();
+    actionLogger->drawLog();
 }
 
 typedef struct {
@@ -90,8 +98,9 @@ std::string deleteSymbol(std::string text, char symbol) {
 int main() {
     playerData PlayerData;
 
-    logs *logger = new logs();
-    commandParser *parser = new commandParser(logger);
+    logs *logger = new logs({44, 3}, 14);
+    logs *actionLogger = new logs({1, 9}, 6);
+    commandParser *parser = new commandParser(logger, actionLogger);
     gameNetworking *net = new gameNetworking(parser);
 
     bool connect = false;
@@ -159,7 +168,7 @@ int main() {
 
                 PlayerData = {tmp_name, tmp_identifier};
 
-                connect = net->connectServer("register:"+tmp_name+","+tmp_identifier+","+tmp_class+"*");
+                net->sendMsg("register:"+tmp_name+","+tmp_identifier+","+tmp_class+"*");
                 
                 if(connect) {
                     std::cout << "You successfully registered, now just use login \n";
@@ -170,7 +179,7 @@ int main() {
         }
     }
 
-	Thread<int> clockThread(clock, new int(69));
+	Thread clockThread(clock);
 
     if(connect) {
         while(true) {
@@ -180,7 +189,7 @@ int main() {
             std::string command;
             std::cin >> command;
             
-            updateBasicScreen(logger);
+            updateBasicScreen(logger, actionLogger);
 
             if(command == "say") {
                 std::string out = "";
@@ -204,10 +213,20 @@ int main() {
                 net->sendMsg("say:"+out+"*");
                 commandHasBeenExecuted = true;
             } else if(command == "disconnect") {
-                //net->sendMsg("disconnect:*");
-                //net->disconnect();
                 commandHasBeenExecuted = true;
                 exit(0);
+            } else if(command == "location") {
+                net->sendMsg("requestforloc:*");
+            } else if(command == "near") {
+                net->sendMsg("looknear:*");
+            } else if(command == "attack") {
+                std::string mob;
+                std::cin >> mob;
+                net->sendMsg("attack:"+mob+"*");
+            } else if(command == "goto") {
+                std::string loc;
+                std::cin >> loc;
+                net->sendMsg("goto:"+loc+"*");
             }
 
             if(!commandHasBeenExecuted) {

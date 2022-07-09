@@ -17,6 +17,7 @@ typedef struct{
 class commandParser {
       private:
             logs *logger;
+            logs *actionlogger;
 
             std::deque<char> stringToDequeTTTTT(std::string text) {
                   std::deque<char> out;
@@ -95,8 +96,9 @@ class commandParser {
             }
 
       public:
-            commandParser(logs *l) {
+            commandParser(logs *l, logs *_actionlogger) {
                   logger = l;
+                  actionlogger = _actionlogger;
             }
 
             void parse(std::string commandstr) {
@@ -105,10 +107,10 @@ class commandParser {
                   for(auto command : commands) {
                         if(command.commandId == "updatestats") {
                               safePrintC("HP: "+command.args[0], cgRed, 1, 3);
-                              safePrintC("ARM: "+command.args[1], cgYellow, 8, 3);
-                              safePrintC("RES: "+command.args[2], cgYellow, 17, 3);
-                              safePrintC("STR: "+command.args[3], cgRed, 26, 3);
-                              safePrintC("INT: "+command.args[4], cgLightBlue, 35, 3);
+                              safePrintC("ARM: "+command.args[1], cgYellow, 1, 4);
+                              safePrintC("AGI: "+command.args[2], cgYellow, 1, 5);
+                              safePrintC("STR: "+command.args[3], cgRed, 1, 6);
+                              safePrintC("INT: "+command.args[4], cgLightBlue, 1, 7);
                         } else if(command.commandId == "log") {
                               std::string out = "";
 
@@ -122,10 +124,57 @@ class commandParser {
 
                               logger->insertLog(out);
                               logger->drawLog();
+                        } else if(command.commandId == "actionlog") {
+                              std::string out = "";
+
+                              for(auto letter : command.args[0]) {
+                                    if(letter == '#') {
+                                          out += " ";
+                                    } else {
+                                          out += letter;
+                                    }
+                              }
+
+                              actionlogger->insertLog(out);
+                              actionlogger->drawLog();
+                        } else if(command.commandId == "updateenergy") {
+                              safePrintC(command.args[0]+"/"+command.args[1], cgBlue, 14, 4);
+                              safePrintC(command.args[2]+"/"+command.args[3], cgYellow, 16, 5);
+                              
+                        } else if(command.commandId == "updategold") {
+                              safePrintC(command.args[0], cgYellow, 14, 7);
+      
+                        } else if(command.commandId == "updatehealth") {
+                              safePrintC(command.args[0]+"/"+command.args[1], cgRed, 16, 3);
+      
                         } else if(command.commandId == "servername") {
                               safePrintC(command.args[0], cgGreen, 52, 1);
+
+                        } else if(command.commandId == "playername") {
+                              safePrint(command.args[0], 1, 1);
+                              
+                        } else if(command.commandId == "classname") {
+                              safePrintC(command.args[0], cgRed, 9, 1);
+
+                        } else if(command.commandId == "playerlvl") {
+                              safePrint("LVL: "+command.args[0], 17, 1);
+
+                        } else if(command.commandId == "playerexp") {
+                              safePrintC("EXP: "+command.args[0]+"/"+command.args[1], cgGreen, 26, 1);
+                              
                         } else if(command.commandId == "playersonline") {
                               safePrintC(command.args[0], cgGreen, 68, 1);
+                              
+                        } else if(command.commandId == "location") {
+                              safePrint(command.args[0], 22, 3);
+
+                              for(int x = 1; x < command.args.size(); x++) {
+                                    safePrint(command.args[x], 22, 3 + x);
+                              }
+                              
+                        } else if(command.commandId == "doublelogin") {
+                              clearConsole
+                              std::cout << "Double login detected, this account currenly connected!";
                         }
                   }
             }

@@ -9,13 +9,23 @@ typedef struct{
       std::string text;
 } gameLogType;
 
+typedef struct{
+      int x = 0;
+      int y = 0;
+} vec2;
+
 class logs {
       private:
-            static const int log_length = 10;
+            int log_length;
             std::deque<gameLogType> log_deq;
 
+            vec2 offset;
+
       public:
-            logs() {};
+            logs(vec2 _offset, int len) {
+                  offset = _offset;
+                  log_length = len;
+            };
 
             void insertLog(std::string text) {
                   log_deq.push_back({text});
@@ -26,10 +36,10 @@ class logs {
             }
 
             void drawLog() {
-                  int offset = 0;
+                  int _offset = 0;
                   for(auto log : log_deq) {
-                        safePrint(log.text, 44, 3 + offset);
-                        offset++;
+                        safePrint(log.text, offset.x, offset.y + _offset);
+                        _offset++;
                   }
             }
 };

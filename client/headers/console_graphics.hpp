@@ -108,3 +108,6 @@ void safePrintC(std::string text, WORD color, int X, int Y) {
 		X++;
 	}
 }
+
+
+#define clearConsole system("CLS");
