@@ -1,14 +1,20 @@
 #pragma once;
 
 #include "statBlock.hpp"
+#include "moneyTypes.hpp"
+#include "playerProgressionTypes.hpp"
+#include "statstype.hpp"
 
 class Mob {
       private:
+            stattype health;
+            lvlType lvl;
 
-            int health;
+            expType expOnDeath;
+            Gold goldOnDeath;
 
             std::string name;
-            int lvl;
+            
             statBlock stats;
       public:
             Mob() {
@@ -16,6 +22,9 @@ class Mob {
                   name = "Undefined";
                   lvl = 0;
                   stats = statBlock(0, 0, 0, 0, 0);
+
+                  expOnDeath = 0;
+                  goldOnDeath = 0;
             }
 
             Mob(std::string _name, int _lvl, statBlock _stats) {
@@ -23,18 +32,34 @@ class Mob {
                   lvl = _lvl;
                   stats = _stats;
                   health = stats.health;
+
+                  expOnDeath = lvl*2;
+
+                  if((lvl - 5) <= 0) {
+                        goldOnDeath = 0;
+                  } else {
+                        goldOnDeath = lvl - 5;
+                  }
             }
 
-            int getHealth() {
+            stattype getHealth() {
                   return health;
             }
 
-            void setHealth(int value) {
+            void setHealth(stattype value) {
                   health = value;
             }
 
-            int getLvl() {
+            lvlType getLvl() {
                   return lvl;
+            }
+
+            Gold getGold() {
+                  return goldOnDeath;
+            }
+
+            expType getExp() {
+                  return expOnDeath;
             }
 
             std::string getName() {
@@ -44,6 +69,8 @@ class Mob {
             statBlock getStats() {
                   return stats;
             }
+
+            
 };
 
 struct Rat : public Mob {

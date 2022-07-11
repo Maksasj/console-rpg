@@ -28,7 +28,7 @@ class Player {
 
             sstring<20> gameLocation;
 
-            LvlType lvl; // exp proggresion 100, 200, 400, 800, 1600 3200 6400 12800....
+            lvlType lvl; // exp proggresion 100, 200, 400, 800, 1600 3200 6400 12800....
             expType exp;
             expType expToNexLvl;
 
@@ -61,8 +61,8 @@ class Player {
                   energy = energyBlock(cclass.getBaseStats().intelect*2, cclass.getBaseStats().agility);
             }
 
-            int dealDamage() {
-                  return 1;
+            damageType dealDamage() {
+                  return cclass.dealDamage();
             }
 
             void setBattleMode(bool _value) {
@@ -103,7 +103,7 @@ class Player {
                   return expToNexLvl;
             }
 
-            LvlType getLvl() {
+            lvlType getLvl() {
                   return lvl;
             }
 
@@ -149,6 +149,10 @@ class Player {
 
             std::string getIdentifier() {
                   return identifier.to_string();
+            }
+
+            void gainGold(Gold _gold) {
+                  gold += _gold;
             }
 };
 

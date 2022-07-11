@@ -40,6 +40,14 @@ static void attackThreadProc(void *data) {
                   ah->p->setBattleMode(false);
                   std::cout << "[SERVER]: "+ah->p->getName()+" killed "+ah->mob.getName()+"\n";
                   std::string message = "actionlog:You#killed#"+ah->mob.getName()+"#and#received#1#gold#and#5#exp*";
+
+                  ah->p->gainExp(ah->mob.getExp());
+                  ah->p->gainGold(ah->mob.getGold());
+
+                  serverDataSender sds;
+                  sds.commandPlayerGold(ah->socket, *(ah->p));
+                  sds.commandPlayerExp(ah->socket, *(ah->p));
+
                   send(ah->socket, message.c_str(), strlen(message.c_str()), 0);
                   break;
             }
